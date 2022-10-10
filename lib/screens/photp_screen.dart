@@ -2,6 +2,7 @@
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_application_1/repository/auth_methods.dart';
 import 'package:flutter_application_1/screens/home_screen.dart';
 
 enum MobileVerificationState {
@@ -36,10 +37,12 @@ class _photpscreenState extends State<photpscreen> {
     try {
       final authCredential =
           await _auth.signInWithCredential(phoneAuthCredential);
+      await AuthMethods().updatePhone(phone: phoneController.text);
 
       setState(() {
         showLoading = false;
       });
+      
 
       if(authCredential.user != null){
         Navigator.push(context, MaterialPageRoute(builder: (context)=> homescreen()));

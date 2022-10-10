@@ -11,16 +11,20 @@ import 'package:flutter_application_1/screens/profile_screen.dart';
 //import 'package:flutter_application_1/screens/registration_screen.dart';
 import 'package:flutter_application_1/search_screen/search_screen.dart';
 import 'package:flutter_application_1/screens/test.dart';
+import 'package:provider/provider.dart';
+
+import '../model/user_model.dart';
+import '../provider/user_provider.dart';
 
 class NavigationDrawerWidget extends StatelessWidget {
-  final String name;
-  final String email;
   final Padding = EdgeInsets.symmetric(horizontal: 20);
 
-  NavigationDrawerWidget({super.key, required this.name, required this.email});
+  NavigationDrawerWidget({super.key});
 
   @override
   Widget build(BuildContext context) {
+
+    final UserModel user = Provider.of<UserProvider>(context).getUser;
     const imageUrl =
         "https://i.pinimg.com/originals/06/81/39/068139bff0b22024e775bfcbb42ed3b4.jpg";
     return Drawer(
@@ -34,11 +38,17 @@ class NavigationDrawerWidget extends StatelessWidget {
                 padding: EdgeInsets.zero,
                 child: UserAccountsDrawerHeader(
                   margin: EdgeInsets.zero,
-                  accountName: Text(name),
-                  accountEmail: Text(email),
-                  currentAccountPicture: CircleAvatar(
-                    backgroundImage: NetworkImage(imageUrl),
-                  ),
+                  accountName: Text('${user.firstname} ${user.secondname}'),
+                  accountEmail: Text('${user.email}'),
+                  currentAccountPicture: user.profilePic==""
+                      ? const CircleAvatar(
+                      radius: 84,
+                      backgroundImage: AssetImage('assets/profilePic.png'))
+                      : CircleAvatar(
+                      radius: 84,
+                      backgroundImage: NetworkImage(
+                        user.profilePic!,
+                      )),
                 ),
               ),
               BuildMenuItem(

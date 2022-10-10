@@ -5,6 +5,7 @@ class UserModel {
   String? secondname;
   String? phone;
   String? address;
+  String? profilePic;
 
   UserModel(
       {this.uid,
@@ -12,17 +13,19 @@ class UserModel {
       this.firstname,
       this.secondname,
       this.phone,
-      this.address});
+      this.address,
+      this.profilePic});
 
   // receiving data from server
   factory UserModel.fromMap(map) {
     return UserModel(
       uid: map['uid'],
-      email: map['email'],
-      firstname: map['firstname'],
-      secondname: map['secondname'],
-      phone: map['phone'],
-      address: map['address'],
+      email: map['email']??"",
+      firstname: map['firstname']??"",
+      secondname: map['secondname']??"",
+      phone: map['phone']??"",
+      address: map['address']??"",
+      profilePic:map['profilePic']??"",
     );
   }
 
@@ -35,6 +38,7 @@ class UserModel {
       'secondname': secondname,
       'phone': phone,
       'address': address,
+      'profilePic':profilePic
     };
   }
 }

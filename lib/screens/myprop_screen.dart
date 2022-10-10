@@ -3,7 +3,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_application_1/model/user_model.dart';
+import 'package:flutter_application_1/provider/user_provider.dart';
 import 'package:flutter_application_1/screens/registration_screen.dart';
+import 'package:provider/provider.dart';
 
 import '../search_screen/components/adtile.dart';
 
@@ -15,29 +18,15 @@ class myproperty extends StatefulWidget {
 }
 
 class _mypropertyState extends State<myproperty> {
-  User? user = FirebaseAuth.instance.currentUser;
-
-  UserModel loggedInUser = UserModel();
-
-  @override
-  void initState() {
-    super.initState();
-    FirebaseFirestore.instance
-        .collection("users")
-        .doc(user!.uid)
-        .get()
-        .then((value) {
-      loggedInUser = UserModel.fromMap(value.data());
-      setState(() {});
-    });
-  }
 
   @override
   Widget build(BuildContext context) {
+
+    final UserModel user = Provider.of<UserProvider>(context).getUser;
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.blueAccent,
-        title: Text(loggedInUser.firstname?.toUpperCase()??""),
+        title: Text(user.firstname?.toUpperCase()??""),
         centerTitle: false,
       ),
       body: Column(
@@ -47,31 +36,40 @@ class _mypropertyState extends State<myproperty> {
             child: Column(
               children: [
                 Row(
-                  children: const [
-                    CircleAvatar(
-                      backgroundColor: Colors.grey,
-                      backgroundImage: NetworkImage("https://i.pinimg.com/originals/06/81/39/068139bff0b22024e775bfcbb42ed3b4.jpg"),
-                      radius: 40,
-                    ),
+                  children: [
+                    user.profilePic==""
+                        ? const CircleAvatar(
+                        radius: 40,
+                        backgroundImage: AssetImage('assets/profilePic.png'))
+                        : CircleAvatar(
+                        radius: 40,
+                        backgroundImage: NetworkImage(
+                          user.profilePic!,
+                        )),
                   ],
                 ),
-                Container(
-                  alignment: Alignment.centerLeft,
-                  padding: const EdgeInsets.only(top: 15, left: 5),
-                  child: Text(
-                    "${loggedInUser.firstname} ${loggedInUser.secondname}",
-                    style: const TextStyle(
-                      fontWeight: FontWeight.bold,
+                    Column(
+                  children: [
+                    Container(
+                      alignment: Alignment.centerLeft,
+                      padding: const EdgeInsets.only(top: 15, left: 5),
+                      child: Text(
+                        "${user.firstname??""} ${user.secondname??""}",
+                        style: const TextStyle(
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
                     ),
-                  ),
+                    Container(
+                      alignment: Alignment.centerLeft,
+                      padding: const EdgeInsets.only(top: 1, left: 5),
+                      child: Text(
+                        user.email??"",
+                      ),
+                    )
+                  ],
                 ),
-                Container(
-                  alignment: Alignment.centerLeft,
-                  padding: const EdgeInsets.only(top: 1, left: 5),
-                  child: Text(
-                    loggedInUser.email??"",
-                  ),
-                )
+
               ],
             ),
           ),
@@ -80,7 +78,7 @@ class _mypropertyState extends State<myproperty> {
             child: FutureBuilder(
               future: FirebaseFirestore.instance
                   .collection('ads')
-                  .where('uid', isEqualTo:user!.uid)
+                  .where('uid', isEqualTo:user.uid)
                   .get(),
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {

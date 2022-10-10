@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_application_1/Getx/search_controller.dart';
+import 'package:get/get.dart';
 
 const double kDefaultPadding =20.0;
-class HeaderWithSearchBox extends StatelessWidget {
+class HeaderWithSearchBox extends StatefulWidget {
   const HeaderWithSearchBox({
     Key? key,
     required this.size,
@@ -10,10 +12,24 @@ class HeaderWithSearchBox extends StatelessWidget {
   final Size size;
 
   @override
+  State<HeaderWithSearchBox> createState() => _HeaderWithSearchBoxState();
+}
+
+class _HeaderWithSearchBoxState extends State<HeaderWithSearchBox> {
+  final TextEditingController searchController = TextEditingController();
+  bool isShowSearch = false;
+  @override
+  void dispose() {
+    searchController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
+    final SearchController c = Get.find();
     return Container(
       margin: const EdgeInsets.only(bottom: kDefaultPadding*2.5),
-      height: size.height * 0.2,
+      height: widget.size.height * 0.2,
       child: Stack(
         children: [
           Container(
@@ -22,7 +38,7 @@ class HeaderWithSearchBox extends StatelessWidget {
               right: kDefaultPadding,
               bottom: 36+ kDefaultPadding,
             ),
-            height: size.height * 0.2 - 27,
+            height: widget.size.height * 0.2 - 27,
             decoration: const BoxDecoration(
               color: Colors.blueAccent,
               borderRadius: BorderRadius.only(
@@ -60,8 +76,9 @@ class HeaderWithSearchBox extends StatelessWidget {
               ),
               child: Row(
                 children: [
-                  Expanded(child: TextField(
-                    onChanged: (value){},
+                  Expanded(child:
+                  TextFormField(
+                    controller: searchController,
                     decoration: InputDecoration(
                       hintText: "Search",
                       hintStyle: TextStyle(
@@ -70,7 +87,15 @@ class HeaderWithSearchBox extends StatelessWidget {
                       enabledBorder: InputBorder.none,
                       focusedBorder: InputBorder.none,
                     ),
-                  ),),
+                    onFieldSubmitted: (String _) {
+                      setState(() {
+                        c.searchText=RxString(searchController.text);
+                        //print("On submit "+c.searchText.toString());
+                        searchController.clear();
+                      });
+                    },
+                  ),
+                  ),
                   Image.asset("assets/images.jpg"),
                 ],
 

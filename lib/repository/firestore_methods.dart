@@ -3,6 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/model/ad_model.dart';
+import 'package:flutter_application_1/model/user_model.dart';
 import 'package:flutter_application_1/repository/storage_methods.dart';
 import 'package:flutter_application_1/screens/registration_screen.dart';
 import 'package:uuid/uuid.dart';

@@ -20,13 +20,13 @@ class _testState extends State<test> {
       borderRadius: BorderRadius.circular(30),
       color: Colors.blue,
       child: MaterialButton(
-        padding: EdgeInsets.fromLTRB(20, 15, 20, 15),
-        minWidth: MediaQuery.of(context).size.width,
+        padding: EdgeInsets.fromLTRB(20, 5, 20, 5),
+        minWidth: MediaQuery.of(context).size.width/1.5,
         onPressed: () {
             Navigator.push(context, MaterialPageRoute(builder: (context)=> loginscreen()));
           },
         child: Text("Login",textAlign: TextAlign.center,style: TextStyle(
-          fontSize: 20,color: Colors.white, fontWeight: FontWeight.bold
+          fontSize: 16,color: Colors.white, fontWeight: FontWeight.bold
         ),),
       ),
     );
@@ -37,13 +37,13 @@ class _testState extends State<test> {
       borderRadius: BorderRadius.circular(30),
       color: Colors.blue,
       child: MaterialButton(
-        padding: EdgeInsets.fromLTRB(20, 15, 20, 15),
-        minWidth: MediaQuery.of(context).size.width,
+        padding: EdgeInsets.fromLTRB(20, 5, 20, 5),
+        minWidth: MediaQuery.of(context).size.width/1.5,
         onPressed: () {
             Navigator.push(context, MaterialPageRoute(builder: (context)=> registrationscreen()));
           },
         child: Text("SignUp",textAlign: TextAlign.center,style: TextStyle(
-          fontSize: 20,color: Colors.white, fontWeight: FontWeight.bold
+          fontSize: 16,color: Colors.white, fontWeight: FontWeight.bold
         ),),
       ),
     );
@@ -89,7 +89,7 @@ class _testState extends State<test> {
                 ],
               ),
                     SizedBox(
-                      height: 430,
+                      height: 350,
                       child: Image.asset("assets/images.jpg",fit: BoxFit.contain,),
                     ),
                     Row(

@@ -6,6 +6,8 @@ import 'package:flutter_application_1/model/ad_model.dart';
 import 'package:flutter_application_1/screens/registration_screen.dart';
 import 'package:flutter_application_1/search_screen/components/report_ad.dart';
 
+import '../model/user_model.dart';
+
 
 class SinglePostScreen extends StatefulWidget {
   final  ad;
@@ -167,7 +169,13 @@ class _SinglePostScreenState extends State<SinglePostScreen> {
                     ),
                     Divider(height: 2,),
                     Container(
-                      color: Colors.blueAccent.shade100,
+
+                      decoration: BoxDecoration(
+                          color: Colors.blueAccent.shade100,
+                        borderRadius: BorderRadius.circular(10)
+                      ),
+                      margin: EdgeInsets.symmetric(horizontal: 10),
+
                       padding: EdgeInsets.all(10),
                       child: ListTile(
                         title: Text('Seller details'),
