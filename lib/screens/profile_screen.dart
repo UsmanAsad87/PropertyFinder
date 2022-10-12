@@ -308,6 +308,34 @@ class _profilesettingState extends State<profilesetting> {
                       ),
                     ),
                   ),
+                  Container(
+                    margin: EdgeInsets.symmetric(vertical: 10),
+                    child: RawMaterialButton(
+                      elevation: 2,
+                      fillColor: Colors.blue,
+                      //splashColor: Colors.greenAccent,
+                      onPressed: () {
+                        AuthMethods().signOut();
+                      },
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(15),
+                      ),
+                      child: SizedBox(
+                        height: 40,
+                        width: 200,
+                        child: Center(
+                          child: _isLoading
+                              ? spinKit(color: Colors.black)
+                              : Text(
+                            'Log Out',
+                            style: TextStyle(
+                                fontSize: 18,
+                                color: Colors.white.withOpacity(0.7)),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
                   const SizedBox(
                     height: 40,
                   )

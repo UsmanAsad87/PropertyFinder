@@ -7,12 +7,17 @@ import 'package:flutter_application_1/model/user_model.dart';
 import 'package:flutter_application_1/screens/addprop_screen.dart';
 import 'package:flutter_application_1/screens/drawer.dart';
 import 'package:flutter_application_1/screens/login_screen.dart';
+import 'package:flutter_application_1/screens/myprop_screen.dart';
 import 'package:flutter_application_1/screens/registration_screen.dart';
 import 'package:flutter_application_1/search_screen/search_screen.dart';
+import 'package:flutter_application_1/utils/loader.dart';
+import 'package:flutter_application_1/utils/title_with_more_btn.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:get/get.dart';
 import 'package:provider/provider.dart';
 
 import '../provider/user_provider.dart';
+import '../search_screen/components/adtile.dart';
 
 class homescreen extends StatefulWidget {
   const homescreen({Key? key}) : super(key: key);
@@ -40,94 +45,148 @@ class _homescreenState extends State<homescreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text("Welcome"),
+        title: Text("Property Finder"),
         centerTitle: true,
+        elevation: 0,
+        backgroundColor:  Colors.blueAccent,
       ),
-      body: Center(
-        child: Padding(
-          padding: EdgeInsets.all(20),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: <Widget>[
-              SizedBox(
-                height: 150,
-                child: Image.asset("assets/images.jpg", fit: BoxFit.contain),
+      body: SingleChildScrollView(
+        scrollDirection: Axis.vertical,
+        physics: BouncingScrollPhysics(),
+        child: Column(
+         // mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: <Widget>[
+            Container(
+              padding: const EdgeInsets.only(
+                left:20,
+                right:20,
+                bottom:  20,
               ),
-              Text(
-                "Welcome to Property Finder",
-                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-              ),
-              SizedBox(
-                height: 10,
-              ),
-              loggedinuser.firstname == null
-                  ? SizedBox(
-                    height: 30.0,
-                    width: 30.0,
-                    child: const CircularProgressIndicator(),
-                  )
-                  : Column(
-                      children: [
-                        Text(
-                            "${loggedinuser.firstname} ${loggedinuser.secondname}",
-                            style: TextStyle(
-                              color: Colors.black54,
-                              fontWeight: FontWeight.w500,
-                            )),
-                        Text("${loggedinuser.email}",
-                            style: TextStyle(
-                              color: Colors.black54,
-                              fontWeight: FontWeight.w500,
-                            )),
-                      ],
-                    ),
-              SizedBox(
-                height: 15,
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
+              height: MediaQuery.of(context).size.height * 0.25,
+              decoration: const BoxDecoration(
+                color: Colors.blueAccent,
+                borderRadius: BorderRadius.only(
+                  bottomLeft: Radius.circular(36),
+                  bottomRight: Radius.circular(36),
+                ),),
+              child: Column(
                 children: [
-                  ActionChip(
-                      label: Text("Sell"),
-                      labelStyle: TextStyle(color: Colors.blueAccent),
-                      onPressed: () {
-                        Navigator.push(context,
-                            MaterialPageRoute(builder: (_) => addProperty()));
-                      }),
-                  const SizedBox(
-                    width: 20,
+                  Row(
+                    children: [
+                      SizedBox(
+                        width: MediaQuery.of(context).size.width*0.6,
+                        child: Text('Welcome to Property Finder', style: Theme.of(context).textTheme.headline5?.copyWith(
+                            color: Colors.white, fontWeight: FontWeight.bold),
+                        ),
+                      ),
+                      const Spacer(),
+                      Image.asset('assets/logo.png',width: 100,height: 100,)
+                    ],
                   ),
-                  ActionChip(
-                      labelStyle: TextStyle(color: Colors.blueAccent),
-                      label: Text("Buy"),
-                      onPressed: () {
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (_) => SearchProperty()));
-                        ;
-                      }),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      ActionChip(
+                        labelPadding: EdgeInsets.symmetric(horizontal: 30,vertical: 2),
+                          label: Text("Sell"),
+                          labelStyle: TextStyle(color: Colors.blueAccent,fontSize: 18),
+                          onPressed: () {
+                            Navigator.push(context,
+                                MaterialPageRoute(builder: (_) => addProperty()));
+                          }),
+                      const SizedBox(
+                        width: 20,
+                      ),
+                      ActionChip(
+                          labelPadding: EdgeInsets.symmetric(horizontal: 30,vertical: 2),
+                          labelStyle: TextStyle(color: Colors.blueAccent,fontSize: 18),
+                          label: Text("Buy"),
+                          onPressed: () {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (_) => SearchProperty()));
+                          }),
+                    ],
+                  ),
                 ],
               ),
-              ActionChip(
-                  label: Text("Logout"),
-                  onPressed: () {
-                    Fluttertoast.showToast(msg: "Logged out");
-                    logout(context);
-                  }),
-            ],
-          ),
+            ),
+            SizedBox(height: 20,),
+            TitleWithMoreBtn(title: "Properties",press: () {
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (_) => SearchProperty()));
+            },),
+            SizedBox(
+              height: 250,
+              child: FutureBuilder(
+                future: FirebaseFirestore.instance
+                    .collection('ads')
+                    .where('uid', isNotEqualTo:loggedinuser.uid)
+                    .get(),
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return  Center(
+                        child:spinKit(color: Colors.black)
+                    );
+                  }
+                  return ListView.builder(
+                    scrollDirection: Axis.horizontal,
+                      itemCount: (snapshot.data! as dynamic).docs.length,
+                      itemBuilder: (context, index) {
+                        DocumentSnapshot snap =
+                        (snapshot.data! as dynamic).docs[index];
+                        return  AdTile(
+                            snap: snap);
+                      });
+                },
+              ),
+            ),
+            SizedBox(height: 20,),
+            TitleWithMoreBtn(title: "My Properties",press: () {
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (_) => myproperty()));
+            },),
+            SizedBox(
+              height: 250,
+              child: FutureBuilder(
+                future: FirebaseFirestore.instance
+                    .collection('ads')
+                    .where('uid', isEqualTo:loggedinuser.uid)
+                    .get(),
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return  Center(
+                      child:spinKit(color: Colors.black)
+                    );
+                  }
+                  return ListView.builder(
+                      scrollDirection: Axis.horizontal,
+                      itemCount: (snapshot.data! as dynamic).docs.length,
+                      itemBuilder: (context, index) {
+                        DocumentSnapshot snap =
+                        (snapshot.data! as dynamic).docs[index];
+                        return  AdTile(
+                            snap: snap);
+                      });
+                },
+              ),
+            ),
+
+
+
+          ],
         ),
       ),
       drawer: NavigationDrawerWidget(),
     );
   }
 
-  void logout(context) async {
-    await FirebaseAuth.instance.signOut();
-    Navigator.of(context).pushReplacement(
-        MaterialPageRoute(builder: (context) => loginscreen()));
-  }
+
 }
